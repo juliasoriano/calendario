@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF7F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Adviento">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Un calendario de Adviento ilustrado, día a día, para ti. Diciembre 2026.">
+<title>Adviento 2026 · Para ti</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 55C10 41 6 27 14 19c7-7 15-3 18 4 3-7 11-11 18-4 8 8 4 22-18 36Z' fill='%23D66853' stroke='%231E1E1E' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FAF7F2'/%3E%3Cpath d='M90 150C28 111 16 75 39 52c18-18 40-8 51 11 11-19 33-29 51-11 23 23 11 59-51 98Z' fill='%23D66853' stroke='%231E1E1E' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   ADVIENTO 2026 · Ilustración plana, trazo negro y papel crema
+   Mobile first · CSS Grid irregular · Sin frameworks
+   ========================================================================== */
+
+:root{
+  --paper:#FAF7F2;
+  --paper-deep:#F3ECE2;
+  --white:#FFFFFF;
+  --ink:#1E1E1E;
+  --sage:#749370;
+  --forest:#5F7D5B;
+  --coral:#D66853;
+  --red:#C45643;
+  --gold:#DFC484;
+  --muted:#7A736A;
+
+  --display:'Fredoka',"Trebuchet MS",system-ui,sans-serif;
+  --text:'Nunito',"Avenir Next",system-ui,sans-serif;
+
+  --gap:clamp(8px,2.2vw,14px);
+  --row:clamp(126px,34vw,168px);
+  --maxw:1180px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+  background:var(--paper);
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  overflow-x:hidden;
+  color:var(--ink);
+  font-family:var(--text);
+  font-weight:500;
+  background:var(--paper);
+}
+
+body.no-scroll{overflow:hidden}
+
+button{font:inherit;color:inherit}
+
+::selection{background:var(--gold);color:var(--ink)}
+
+/* Copos y puntitos: puramente decorativos, nunca bloquean toques */
+.snow-layer{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.8;
+  background-image:
+    radial-gradient(circle,rgba(122,115,106,.34) 1px,transparent 1.3px),
+    radial-gradient(circle,rgba(196,86,67,.22) 1.1px,transparent 1.4px),
+    radial-gradient(circle,rgba(122,115,106,.18) .8px,transparent 1px);
+  background-size:41px 41px,67px 67px,23px 23px;
+  background-position:0 0,17px 12px,8px 30px;
+}
+
+.page{
+  position:relative;
+  z-index:1;
+  width:min(100%,var(--maxw));
+  margin-inline:auto;
+  padding:
+    calc(20px + env(safe-area-inset-top))
+    clamp(14px,4vw,34px)
+    calc(30px + env(safe-area-inset-bottom));
+}
+
+/* --------------------------------------------------------------------------
+   Cabecera
+   -------------------------------------------------------------------------- */
+.hero{text-align:center;padding-bottom:clamp(18px,4vw,30px)}
+
+.hero__sprig{
+  width:clamp(72px,17vw,104px);
+  height:auto;
+  display:block;
+  margin:0 auto 2px;
+  pointer-events:none;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+
+.hero__kicker{
+  margin:0 0 4px;
+  font-size:clamp(.68rem,2.4vw,.82rem);
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--forest);
+}
+
+.hero h1{
+  margin:0;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(2.15rem,9.2vw,4.6rem);
+  line-height:1.02;
+  letter-spacing:-.02em;
+  color:var(--coral);
+  text-shadow:2.5px 2.5px 0 var(--ink);
+}
+
+.hero h1 span{
+  display:block;
+  color:var(--forest);
+  font-size:.82em;
+}
+
+.hero__sub{
+  max-width:38ch;
+  margin:12px auto 0;
+  font-size:clamp(.88rem,2.6vw,1.05rem);
+  line-height:1.5;
+  color:var(--muted);
+  text-wrap:balance;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin:14px auto 0;
+  padding:6px 13px;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  box-shadow:2px 2px 0 var(--ink);
+  background:var(--white);
+  font-size:clamp(.72rem,2.2vw,.82rem);
+  font-weight:700;
+}
+
+.status::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--sage);
+  border:1.5px solid var(--ink);
+}
+
+.status.is-preview{background:var(--gold)}
+
+/* --------------------------------------------------------------------------
+   Grid irregular: 2 columnas en móvil estrecho → 3 → 4 → 6
+   -------------------------------------------------------------------------- */
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-auto-rows:var(--row);
+  grid-auto-flow:dense;
+  gap:var(--gap);
+  padding:2px 0 6px;
+}
+
+.door--wide{grid-column:span 2}
+.door--tall{grid-row:span 2}
+.door--hero{grid-column:span 2;grid-row:span 2}
+
+.door{
+  position:relative;
+  display:block;
+  min-width:0;
+  min-height:0;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  appearance:none;
+  -webkit-appearance:none;
+  border:2.5px solid var(--ink);
+  border-radius:16px;
+  box-shadow:3px 3px 0 var(--ink);
+  background:var(--tone,var(--white));
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+  transition:transform .18s ease,opacity .18s ease;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+.tone-sage{--tone:var(--sage)}
+.tone-forest{--tone:var(--forest)}
+.tone-coral{--tone:var(--coral)}
+.tone-red{--tone:var(--red)}
+.tone-cream{--tone:var(--paper)}
+.tone-white{--tone:var(--white)}
+.tone-gold{--tone:var(--gold)}
+
+@media (hover:hover){
+  .door:hover{transform:translate(-2px,-2px)}
+}
+
+.door:active{transform:translate(2px,2px) scale(.99)}
+
+.door:focus-visible{
+  outline:3px solid var(--ink);
+  outline-offset:3px;
+}
+
+.door__number{
+  position:absolute;
+  z-index:3;
+  top:6px;
+  left:6px;
+  min-width:28px;
+  height:28px;
+  padding:0 6px;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  background:var(--paper);
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(.85rem,3.2vw,1rem);
+  line-height:1;
+  pointer-events:none;
+}
+
+.door--hero .door__number{
+  top:10px;
+  left:10px;
+  min-width:40px;
+  height:40px;
+  background:var(--gold);
+  font-size:clamp(1.1rem,5vw,1.5rem);
+}
+
+.door__art{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:none;
+  /* El espacio superior reserva sitio al número y evita que se tapen */
+  padding:20px 5% 4px;
+  pointer-events:none;
+}
+
+.door--hero .door__art{padding-top:30px}
+
+.door__visual{
+  display:block;
+  width:85%;
+  height:85%;
+  max-height:none;
+  object-fit:contain;
+  background:none;
+  opacity:1;
+  pointer-events:none;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateY(10px);
+}
+
+/* Las PNG con halo blanco se funden con el papel de la ventana */
+.visual--png{mix-blend-mode:multiply}
+
+.door__lock{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:clamp(44px,15vw,68px);
+  height:auto;
+  opacity:1;
+  pointer-events:none;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translate(-50%,-50%) translateY(9px) scale(1);
+  transition:opacity .2s ease,transform .2s ease;
+}
+
+.door.is-ready .door__lock,
+.door.is-open .door__lock{
+  opacity:0;
+  transform:translate(-50%,-50%) translateY(9px) scale(.8);
+}
+
+.door.is-open::after{
+  content:"✓";
+  position:absolute;
+  z-index:4;
+  right:7px;
+  bottom:7px;
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--ink);
+  border-radius:50%;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--display);
+  font-weight:700;
+  font-size:.8rem;
+  line-height:1;
+  box-shadow:2px 2px 0 var(--ink);
+  pointer-events:none;
+}
+
+.door.is-shaking{animation:shake .32s ease}
+
+@keyframes shake{
+  0%,100%{transform:translate(0,0)}
+  25%{transform:translate(-4px,0)}
+  50%{transform:translate(4px,0)}
+  75%{transform:translate(-2px,0)}
+}
+
+/* --------------------------------------------------------------------------
+   Pie y modo vista previa
+   -------------------------------------------------------------------------- */
+.footer{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:10px 16px;
+  padding-top:clamp(20px,4vw,30px);
+  text-align:center;
+}
+
+.footer__note{
+  margin:0;
+  font-size:.78rem;
+  font-weight:700;
+  color:var(--muted);
+}
+
+.preview-btn{
+  padding:6px 12px;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  box-shadow:2px 2px 0 var(--ink);
+  background:var(--white);
+  font-family:var(--text);
+  font-size:.74rem;
+  font-weight:700;
+  opacity:.72;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:opacity .18s ease,transform .18s ease;
+}
+
+.preview-btn:hover,.preview-btn:focus-visible{opacity:1}
+.preview-btn:active{transform:translate(1px,1px)}
+.preview-btn[aria-pressed="true"]{background:var(--gold);opacity:1}
+
+/* --------------------------------------------------------------------------
+   Aviso flotante
+   -------------------------------------------------------------------------- */
+.toast{
+  position:fixed;
+  z-index:80;
+  left:50%;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  width:max-content;
+  max-width:calc(100% - 32px);
+  padding:10px 15px;
+  border:2.5px solid var(--ink);
+  border-radius:14px;
+  box-shadow:3px 3px 0 var(--ink);
+  background:var(--paper);
+  font-size:clamp(.82rem,2.6vw,.94rem);
+  font-weight:700;
+  line-height:1.3;
+  text-align:center;
+  opacity:0;
+  pointer-events:none;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translate(-50%,14px);
+  transition:opacity .2s ease,transform .2s ease;
+}
+
+.toast.is-visible{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* --------------------------------------------------------------------------
+   Modal · tarjeta ilustrada
+   -------------------------------------------------------------------------- */
+.modal[hidden]{display:none}
+
+.modal__backdrop{
+  position:fixed;
+  inset:0;
+  z-index:60;
+  display:grid;
+  place-items:end center;
+  padding:
+    calc(30px + env(safe-area-inset-top))
+    14px
+    calc(18px + env(safe-area-inset-bottom));
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  background:rgba(30,30,30,.36);
+  opacity:0;
+  transition:opacity .2s ease;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+
+.modal.is-open .modal__backdrop{opacity:1}
+
+.modal__card{
+  position:relative;
+  width:min(100%,520px);
+  max-height:calc(100dvh - 56px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  margin-top:16px;
+  padding:clamp(20px,5vw,30px) clamp(18px,5vw,30px) clamp(22px,5vw,32px);
+  border:2.5px solid var(--ink);
+  border-radius:20px;
+  box-shadow:4px 4px 0 var(--ink);
+  background:var(--paper);
+  opacity:0;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateY(20px) scale(.97);
+  transition:opacity .2s ease,transform .2s ease;
+}
+
+.modal.is-open .modal__card{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+
+.modal__mistletoe{
+  position:absolute;
+  z-index:2;
+  top:-30px;
+  left:50%;
+  width:96px;
+  height:auto;
+  pointer-events:none;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateX(-50%);
+}
+
+.modal__close{
+  position:absolute;
+  z-index:3;
+  top:12px;
+  right:12px;
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  padding:0 0 2px;
+  border:2px solid var(--ink);
+  border-radius:50%;
+  box-shadow:2px 2px 0 var(--ink);
+  background:var(--white);
+  cursor:pointer;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.25rem;
+  line-height:1;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.modal__close:active{transform:translate(1px,1px)}
+
+.modal__head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-right:36px;
+}
+
+.modal__badge{
+  flex:0 0 auto;
+  min-width:42px;
+  height:42px;
+  padding:0 8px;
+  display:grid;
+  place-items:center;
+  border:2.5px solid var(--ink);
+  border-radius:12px;
+  box-shadow:2px 2px 0 var(--ink);
+  background:var(--gold);
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.25rem;
+}
+
+.modal__heading{
+  margin:0;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(1.15rem,4.6vw,1.5rem);
+  line-height:1.15;
+  color:var(--forest);
+}
+
+.modal__custom-title{
+  margin:10px 0 0;
+  font-family:var(--display);
+  font-weight:700;
+  font-size:1.1rem;
+  color:var(--coral);
+}
+
+.modal__custom-title[hidden]{display:none}
+
+.modal__visual{
+  display:block;
+  width:85%;
+  height:180px;
+  max-height:none;
+  object-fit:contain;
+  margin:6px auto 2px;
+  background:none;
+  opacity:1;
+  pointer-events:none;
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  transform:translateZ(0);
+}
+
+.modal__body{
+  font-size:clamp(.92rem,3vw,1.02rem);
+  line-height:1.6;
+  color:#3A352F;
+  overflow-wrap:break-word;
+}
+
+.modal__body p{margin:0 0 .8em}
+.modal__body p:last-child{margin-bottom:0}
+.modal__body strong{font-weight:700;color:var(--red)}
+.modal__body em{color:var(--forest)}
+.modal__body ul,.modal__body ol{padding-left:1.25em;margin:.6em 0}
+.modal__body li{margin:.3em 0}
+.modal__body a{color:var(--red);text-decoration-thickness:2px;text-underline-offset:3px}
+.modal__body blockquote{
+  margin:.9em 0;
+  padding:.6em .9em;
+  border-left:4px solid var(--gold);
+  background:rgba(223,196,132,.18);
+  border-radius:0 12px 12px 0;
+}
+.modal__body img{max-width:100%;height:auto;border-radius:12px}
+
+.modal__empty{
+  margin:0;
+  padding:14px 16px;
+  border:2px dashed var(--gold);
+  border-radius:14px;
+  background:rgba(223,196,132,.14);
+  font-weight:700;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* --------------------------------------------------------------------------
+   Media queries progresivas
+   -------------------------------------------------------------------------- */
+@media (min-width:430px){
+  :root{--row:clamp(118px,25vw,150px)}
+  .calendar{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+@media (min-width:760px){
+  :root{--row:clamp(110px,15vw,140px)}
+  .calendar{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .modal__backdrop{place-items:center}
+  .modal__card{margin-top:20px}
+  .modal__visual{height:220px}
+}
+
+@media (min-width:1080px){
+  :root{--row:clamp(104px,10.5vw,126px)}
+  .calendar{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .door--hero{grid-column:span 3}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<div class="snow-layer" aria-hidden="true"></div>
+
+<main class="page">
+  <header class="hero">
+    <svg class="hero__sprig" viewBox="0 0 120 80" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 62c22-4 42-18 54-38" fill="#749370"/>
+        <path d="M38 51C27 37 16 38 10 46c9 11 20 13 28 5Z" fill="#749370"/>
+        <path d="M54 36c14-10 27-7 32 2-11 10-24 10-32-2Z" fill="#749370"/>
+        <circle cx="34" cy="39" r="6" fill="#D66853"/>
+        <circle cx="47" cy="29" r="6" fill="#D66853"/>
+        <circle cx="60" cy="20" r="6" fill="#DFC484"/>
+      </g>
+    </svg>
+    <p class="hero__kicker">Diciembre 2026 · Para ti</p>
+    <h1>Veinticuatro días<span>para quererte</span></h1>
+    <p class="hero__sub">Una ventanita nueva cada mañana. Un poquito de magia, solo para ti.</p>
+    <p class="status" id="status">Diciembre 2026 · una ventanita cada día</p>
+  </header>
+
+  <section class="calendar" id="calendar" aria-label="Calendario de Adviento"></section>
+
+  <footer class="footer">
+    <p class="footer__note">Hecho con cariño y un poco de nieve ✦</p>
+    <button class="preview-btn" id="previewToggle" type="button" aria-pressed="true">Vista previa: activa</button>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" id="modalBackdrop">
+    <div class="modal__card" id="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+      <svg class="modal__mistletoe" viewBox="0 0 120 70" aria-hidden="true">
+        <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M60 64V18" stroke="#749370"/>
+          <path d="M60 34C45 21 31 23 24 32c11 13 25 14 36 2Z" fill="#749370"/>
+          <path d="M60 45c15-13 29-11 36-2-11 13-25 14-36 2Z" fill="#749370"/>
+          <circle cx="51" cy="31" r="7" fill="#D66853"/>
+          <circle cx="69" cy="31" r="7" fill="#D66853"/>
+          <circle cx="60" cy="47" r="7" fill="#D66853"/>
+        </g>
+      </svg>
+
+      <button class="modal__close" id="modalClose" type="button" aria-label="Cerrar ventana">×</button>
+
+      <div class="modal__head">
+        <span class="modal__badge" id="modalBadge">01</span>
+        <h2 class="modal__heading" id="modalTitle">Sorpresa del día <span id="modalDayText">01</span></h2>
+      </div>
+      <p class="modal__custom-title" id="modalCustomTitle" hidden></p>
+      <div class="modal__visual" id="modalArt" aria-hidden="true"></div>
+      <div class="modal__body" id="modalBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   Ajustes de diseño
+   ========================================================================== */
+const DEV_UNLOCK_ALL = true;
+
+const YEAR = 2026;
+const MONTH = 11; /* diciembre (0 = enero) */
+const STORAGE_KEY = 'adviento2026:abiertas';
+const PREVIEW_KEY = 'adviento2026:preview';
+
+/* ==========================================================================
+   ADVENT_DATA · rellena title y htmlContent cuando quieras, día a día.
+   htmlContent admite HTML (p, strong, em, ul, blockquote, imgs…).
+   ========================================================================== */
+const ADVENT_DATA = [
+  { day: 1,  doorImage: null,                    title: '', htmlContent: '' },
+  { day: 2,  doorImage: 'assets/img/dia2.png',   title: '', htmlContent: '' },
+  { day: 3,  doorImage: null,                    title: '', htmlContent: '' },
+  { day: 4,  doorImage: 'assets/img/dia4.png',   title: '', htmlContent: '' },
+  { day: 5,  doorImage: null,                    title: '', htmlContent: '' },
+  { day: 6,  doorImage: 'assets/img/dia6.png',   title: '', htmlContent: '' },
+  { day: 7,  doorImage: null,                    title: '', htmlContent: '' },
+  { day: 8,  doorImage: 'assets/img/dia8.png',   title: '', htmlContent: '' },
+  { day: 9,  doorImage: null,                    title: '', htmlContent: '' },
+  { day: 10, doorImage: 'assets/img/dia10.png',  title: '', htmlContent: '' },
+  { day: 11, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 12, doorImage: 'assets/img/dia12.png',  title: '', htmlContent: '' },
+  { day: 13, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 14, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 15, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 16, doorImage: 'assets/img/dia16.png',  title: '', htmlContent: '' },
+  { day: 17, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 18, doorImage: 'assets/img/dia18.png',  title: '', htmlContent: '' },
+  { day: 19, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 20, doorImage: 'assets/img/dia20.png',  title: '', htmlContent: '' },
+  { day: 21, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 22, doorImage: 'assets/img/dia22.png',  title: '', htmlContent: '' },
+  { day: 23, doorImage: null,                    title: '', htmlContent: '' },
+  { day: 24, doorImage: 'assets/img/dia24.png',  title: '', htmlContent: '' }
+];
+
+/* Composición del grid: los días con ilustración de parejita son los grandes */
+const WIDE_DAYS = new Set([2, 6, 10, 16, 20]);
+const TALL_DAYS = new Set([4, 8, 12, 18, 22]);
+
+/* Orden fijo y mezclado sobre el tablero. La fecha de cada número no cambia. */
+const DISPLAY_ORDER = [
+  14, 2, 19, 7, 22, 4,
+  11, 16, 1, 9, 24, 5,
+  18, 3, 12, 20, 8, 15,
+  6, 23, 10, 17, 13, 21
+];
+
+/* Días con PNG → crema/blanco (sin cortes de transparencia).
+   Días con SVG → verde/rojo. El 24 conserva el mostaza en su numerito. */
+const TONES = [
+  'sage','white','forest','cream','coral','white',
+  'sage','cream','red','white','forest','cream',
+  'coral','sage','red','white','forest','cream',
+  'coral','white','sage','cream','forest','cream'
+];
+
+const ICON_BY_DAY = {
+  1:'mistletoe', 3:'candy', 5:'gift', 7:'cocoa', 9:'hat', 11:'star',
+  13:'mistletoe', 14:'candy', 15:'gift', 17:'cocoa', 19:'hat', 21:'star', 23:'mistletoe'
+};
+
+/* ==========================================================================
+   SVG de respaldo · mismo trazo: #1E1E1E / 2.5 / round
+   ========================================================================== */
+const SVG_ICONS = {
+  mistletoe: `
+    <svg class="art-svg __CLASS__" viewBox="0 0 120 120" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 16v84" stroke="#749370"/>
+        <path d="M60 42C45 28 31 30 23 40c12 14 26 15 37 2Z" fill="#749370"/>
+        <path d="M60 55c15-14 29-12 37-2-12 14-26 15-37 2Z" fill="#749370"/>
+        <path d="M60 70c-14 10-16 24-8 34 12-8 16-22 8-34Z" fill="#749370"/>
+        <circle cx="52" cy="51" r="7" fill="#D66853"/>
+        <circle cx="68" cy="51" r="7" fill="#D66853"/>
+        <circle cx="60" cy="68" r="7" fill="#D66853"/>
+      </g>
+    </svg>`,
+
+  candy: `
+    <svg class="art-svg __CLASS__" viewBox="0 0 120 120" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M44 106V62c0-18 12-30 28-30s28 12 28 30v10a10 10 0 0 1-20 0v-10c0-6-3-10-8-10s-8 4-8 10v44a10 10 0 0 1-20 0Z" fill="#D66853"/>
+        <path d="M47 91l15-7M47 71l15-7M59 43l13-10M84 36l11 9M99 64l-1 11" stroke="#FFFFFF" stroke-width="5"/>
+      </g>
+    </svg>`,
+
+  gift: `
+    <svg class="art-svg __CLASS__" viewBox="0 0 120 120" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="25" y="52" width="70" height="52" rx="11" fill="#749370"/>
+        <rect x="18" y="41" width="84" height="18" rx="7" fill="#D66853"/>
+        <path d="M60 41C45 39 36 31 40 23c4-8 16-4 20 18 4-22 16-26 20-18 4 8-5 16-20 18Z" fill="#DFC484"/>
+        <path d="M60 53v51" stroke="#DFC484" stroke-width="5"/>
+      </g>
+    </svg>`,
+
+  cocoa: `
+    <svg class="art-svg __CLASS__" viewBox="0 0 120 120" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M28 46h56v42c0 11-9 20-20 20H48c-11 0-20-9-20-20V46Z" fill="#D66853"/>
+        <ellipse cx="56" cy="46" rx="28" ry="8" fill="#DFC484"/>
+        <path d="M84 57h9c11 0 16 6 16 14s-6 14-16 14h-9" fill="none"/>
+        <path d="M40 35c-7-9 8-12 1-22M60 35c-7-9 8-12 1-22" stroke="#749370"/>
+        <path d="M38 70c10 6 26 6 36 0" stroke="#FAF7F2"/>
+      </g>
+    </svg>`,
+
+  hat: `
+    <svg class="art-svg __CLASS__" viewBox="0 0 120 120" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M24 80c3-26 20-44 42-46 16-2 26 7 25 18-1 12-13 18-25 14-9-3-15-10-14-19" fill="#D66853"/>
+        <rect x="16" y="78" width="80" height="18" rx="9" fill="#FFFFFF"/>
+        <circle cx="91" cy="30" r="12" fill="#FFFFFF"/>
+        <path d="M60 32c6 6 14 12 22 17" stroke="#FAF7F2"/>
+      </g>
+    </svg>`,
+
+  star: `
+    <svg class="art-svg __CLASS__" viewBox="0 0 120 120" aria-hidden="true">
+      <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 12l12 27 29 4-21 20 5 29-25-14-25 14 5-29-21-20 29-4L60 12Z" fill="#DFC484"/>
+        <path d="M45 53l30 22M75 53L45 75" stroke="#FFFFFF" stroke-width="4"/>
+      </g>
+    </svg>`
+};
+
+const LOCK_SVG = `
+  <svg class="door__lock" viewBox="0 0 80 80" aria-hidden="true">
+    <g fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M24 35v-9c0-10 7-17 16-17s16 7 16 17v9"/>
+      <rect x="15" y="35" width="50" height="39" rx="11" fill="#FAF7F2"/>
+      <circle cx="40" cy="50" r="5.5" fill="#1E1E1E" stroke="none"/>
+      <path d="M40 55v8"/>
+    </g>
+  </svg>`;
+
+/* ==========================================================================
+   Estado
+   ========================================================================== */
+function readOpened(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(parsed)
+      ? parsed.filter(n => Number.isInteger(n) && n >= 1 && n <= 24)
+      : []);
+  }catch(err){
+    return new Set();
+  }
+}
+
+function readPreview(){
+  try{
+    const raw = localStorage.getItem(PREVIEW_KEY);
+    if(raw === null) return DEV_UNLOCK_ALL;
+    return raw === '1';
+  }catch(err){
+    return DEV_UNLOCK_ALL;
+  }
+}
+
+const opened = readOpened();
+let previewMode = readPreview();
+
+function saveOpened(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...opened].sort((a,b) => a - b)));
+  }catch(err){ /* modo privado de Safari: seguimos sin guardar */ }
+}
+
+function savePreview(){
+  try{
+    localStorage.setItem(PREVIEW_KEY, previewMode ? '1' : '0');
+  }catch(err){ /* ignorado */ }
+}
+
+function isUnlocked(day){
+  if(previewMode) return true;
+  /*Constructor local = 00:00 hora del dispositivo, nunca UTC */
+  return Date.now() >= new Date(YEAR, MONTH, day, 0, 0, 0, 0).getTime();
+}
+
+/* ==========================================================================
+   Construcción del calendario
+   ========================================================================== */
+const calendar = document.getElementById('calendar');
+const toast = document.getElementById('toast');
+const statusEl = document.getElementById('status');
+const previewBtn = document.getElementById('previewToggle');
+const dataByDay = new Map(ADVENT_DATA.map(item => [item.day, item]));
+const doorElements = new Map();
+let toastTimer = null;
+
+function sizeClass(day){
+  if(day === 24) return 'hero';
+  if(WIDE_DAYS.has(day)) return 'wide';
+  if(TALL_DAYS.has(day)) return 'tall';
+  return 'small';
+}
+
+function artHTML(item, day, className){
+  if(item.doorImage){
+    const cls = `${className} visual--png`;
+    return `<img class="${cls}" src="${item.doorImage}" alt="" draggable="false" decoding="async">`;
+  }
+  const key = ICON_BY_DAY[day] || 'star';
+  return SVG_ICONS[key].replace('__CLASS__', className);
+}
+
+function updateDoorState(btn, day){
+  const unlocked = isUnlocked(day);
+  const isOpen = unlocked && opened.has(day);
+
+  btn.classList.toggle('is-locked', !unlocked);
+  btn.classList.toggle('is-ready', unlocked && !isOpen);
+  btn.classList.toggle('is-open', isOpen);
+
+  let label;
+  if(!unlocked){
+    label = `Día ${day}: cerrado. Se abre el ${day} de diciembre de 2026.`;
+  }else if(isOpen){
+    label = `Día ${day}: abierto. Toca para volver a leer la sorpresa.`;
+  }else{
+    label = `Día ${day}: disponible. Toca para abrir la sorpresa.`;
+  }
+  btn.setAttribute('aria-label', label);
+}
+
+DISPLAY_ORDER.forEach(day => {
+  const item = dataByDay.get(day);
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = `door door--${sizeClass(item.day)} tone-${TONES[item.day - 1]}`;
+  btn.dataset.day = String(item.day);
+  btn.innerHTML =
+    `<span class="door__number">${item.day}</span>` +
+    `<span class="door__art">${artHTML(item, item.day, 'door__visual')}${LOCK_SVG}</span>`;
+
+  btn.addEventListener('click', () => handleDoor(item.day, btn));
+  calendar.appendChild(btn);
+  doorElements.set(item.day, btn);
+  updateDoorState(btn, item.day);
+});
+
+function refreshDoors(){
+  doorElements.forEach((btn, day) => updateDoorState(btn, day));
+}
+
+/* ==========================================================================
+   Interacción
+   ========================================================================== */
+function showToast(message){
+  toast.textContent = message;
+  toast.classList.add('is-visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2800);
+}
+
+function safeVibrate(ms){
+  try{
+    if(navigator.vibrate) navigator.vibrate(ms);
+  }catch(err){ /* Safari no soporta vibrate */ }
+}
+
+function handleDoor(day, btn){
+  if(!isUnlocked(day)){
+    safeVibrate(45);
+    btn.classList.remove('is-shaking');
+    void btn.offsetWidth;
+    btn.classList.add('is-shaking');
+    setTimeout(() => btn.classList.remove('is-shaking'), 340);
+    showToast(`¡Aún no! Esta sorpresa se abre el ${day} de diciembre.`);
+    return;
+  }
+
+  opened.add(day);
+  saveOpened();
+  updateDoorState(btn, day);
+  openModal(day);
+}
+
+function updatePreviewUI(){
+  statusEl.textContent = previewMode
+    ? 'Vista previa activa · puedes abrir todos los días'
+    : 'Diciembre 2026 · una ventanita cada día';
+  statusEl.classList.toggle('is-preview', previewMode);
+  previewBtn.textContent = previewMode ? 'Vista previa: activa' : 'Vista previa: desactivada';
+  previewBtn.setAttribute('aria-pressed', String(previewMode));
+}
+
+previewBtn.addEventListener('click', () => {
+  previewMode = !previewMode;
+  savePreview();
+  updatePreviewUI();
+  refreshDoors();
+  showToast(previewMode
+    ? 'Vista previa activa: todas las ventanas se pueden abrir.'
+    : 'Vista previa desactivada: vuelve la fecha real.');
+});
+
+updatePreviewUI();
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+const modal = document.getElementById('modal');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalCard = document.getElementById('modalCard');
+const modalClose = document.getElementById('modalClose');
+const modalBadge = document.getElementById('modalBadge');
+const modalDayText = document.getElementById('modalDayText');
+const modalCustomTitle = document.getElementById('modalCustomTitle');
+const modalArt = document.getElementById('modalArt');
+const modalBody = document.getElementById('modalBody');
+
+let lastFocused = null;
+let hideTimer = null;
+
+function openModal(day){
+  const item = dataByDay.get(day);
+  const number = String(day).padStart(2, '0');
+
+  modalBadge.textContent = number;
+  modalDayText.textContent = number;
+
+  if(item.title && item.title.trim()){
+    modalCustomTitle.textContent = item.title;
+    modalCustomTitle.hidden = false;
+  }else{
+    modalCustomTitle.textContent = '';
+    modalCustomTitle.hidden = true;
+  }
+
+  modalArt.innerHTML = artHTML(item, day, 'modal__visual');
+  modalBody.innerHTML = (item.htmlContent && item.htmlContent.trim())
+    ? item.htmlContent
+    : `<p class="modal__empty">Aquí vivirá la sorpresa del día ${day}. Todavía la estoy escribiendo… 💌</p>`;
+
+  lastFocused = document.activeElement;
+  clearTimeout(hideTimer);
+  modal.hidden = false;
+  document.body.classList.add('no-scroll');
+  requestAnimationFrame(() => modal.classList.add('is-open'));
+  modalClose.focus({preventScroll:true});
+}
+
+function closeModal(){
+  if(modal.hidden) return;
+  modal.classList.remove('is-open');
+  document.body.classList.remove('no-scroll');
+  hideTimer = setTimeout(() => {
+    modal.hidden = true;
+    modalArt.innerHTML = '';
+    if(lastFocused && typeof lastFocused.focus === 'function'){
+      lastFocused.focus({preventScroll:true});
+    }
+  }, 210);
+}
+
+modalClose.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', event => {
+  if(event.target === modalBackdrop) closeModal();
+});
+
+document.addEventListener('keydown', event => {
+  if(modal.hidden) return;
+
+  if(event.key === 'Escape'){
+    closeModal();
+    return;
+  }
+
+  if(event.key === 'Tab'){
+    const focusables = [...modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter(el => !el.disabled);
+    if(!focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if(event.shiftKey && document.activeElement === first){
+      event.preventDefault();
+      last.focus();
+    }else if(!event.shiftKey && document.activeElement === last){
+      event.preventDefault();
+      first.focus();
+    }
+  }
+});
+</script>
+</body>
+</html>
