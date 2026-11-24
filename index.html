@@ -39,8 +39,8 @@
   --display:'Fredoka',"Trebuchet MS",system-ui,sans-serif;
   --text:'Nunito',"Avenir Next",system-ui,sans-serif;
 
+  --pad:clamp(14px,4vw,34px);
   --gap:clamp(8px,2.2vw,14px);
-  --row:clamp(126px,34vw,168px);
   --maxw:1180px;
 }
 
@@ -91,7 +91,7 @@ button{font:inherit;color:inherit}
   margin-inline:auto;
   padding:
     calc(20px + env(safe-area-inset-top))
-    clamp(14px,4vw,34px)
+    var(--pad)
     calc(30px + env(safe-area-inset-bottom));
 }
 
@@ -174,6 +174,10 @@ button{font:inherit;color:inherit}
    Grid irregular: 2 columnas en móvil estrecho → 3 → 4 → 6
    -------------------------------------------------------------------------- */
 .calendar{
+  /* La altura de fila == ancho de columna: las casillas 1x1 y 2x2 son cuadradas */
+  --cols:2;
+  --board:min(calc(100vw - 2 * var(--pad)), calc(var(--maxw) - 2 * var(--pad)));
+  --row:calc((var(--board) - (var(--cols) - 1) * var(--gap)) / var(--cols));
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   grid-auto-rows:var(--row);
@@ -182,8 +186,15 @@ button{font:inherit;color:inherit}
   padding:2px 0 6px;
 }
 
+/* Medición exacta del ancho disponible cuando el navegador lo permite */
+@supports (width:1cqw){
+  .page{container-type:inline-size}
+  .calendar{--board:100cqw}
+}
+
 .door--wide{grid-column:span 2}
 .door--tall{grid-row:span 2}
+.door--big{grid-column:span 2;grid-row:span 2}
 .door--hero{grid-column:span 2;grid-row:span 2}
 
 .door{
@@ -250,6 +261,14 @@ button{font:inherit;color:inherit}
   pointer-events:none;
 }
 
+.door--big .door__number{
+  top:9px;
+  left:9px;
+  min-width:36px;
+  height:36px;
+  font-size:clamp(1rem,4.4vw,1.25rem);
+}
+
 .door--hero .door__number{
   top:10px;
   left:10px;
@@ -272,12 +291,30 @@ button{font:inherit;color:inherit}
   pointer-events:none;
 }
 
+.door--big .door__art{padding-top:24px}
 .door--hero .door__art{padding-top:30px}
+
+/* Detalles sutiles para equilibrar las ventanas rectangulares con SVG */
+.door--wide .door__art::before,
+.door--wide .door__art::after,
+.door--tall .door__art::before,
+.door--tall .door__art::after{
+  position:absolute;
+  color:rgba(30,30,30,.20);
+  font-family:var(--display);
+  font-weight:700;
+  line-height:1;
+  pointer-events:none;
+}
+.door--wide .door__art::before{content:"✦";top:15%;left:8%;font-size:12px}
+.door--wide .door__art::after{content:"✧";top:58%;right:8%;font-size:14px}
+.door--tall .door__art::before{content:"✦";top:13%;left:50%;transform:translateX(-50%);font-size:13px}
+.door--tall .door__art::after{content:"·";bottom:11%;left:50%;transform:translateX(-50%);font-size:28px}
 
 .door__visual{
   display:block;
-  width:85%;
-  height:85%;
+  width:82%;
+  height:82%;
   max-height:none;
   object-fit:contain;
   background:none;
@@ -546,7 +583,7 @@ button{font:inherit;color:inherit}
 
 .modal__visual{
   display:block;
-  width:85%;
+  width:82%;
   height:180px;
   max-height:none;
   object-fit:contain;
@@ -597,22 +634,19 @@ button{font:inherit;color:inherit}
    Media queries progresivas
    -------------------------------------------------------------------------- */
 @media (min-width:430px){
-  :root{--row:clamp(118px,25vw,150px)}
-  .calendar{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .calendar{--cols:3;grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 
 @media (min-width:760px){
-  :root{--row:clamp(110px,15vw,140px)}
-  .calendar{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .calendar{--cols:4;grid-template-columns:repeat(4,minmax(0,1fr))}
   .modal__backdrop{place-items:center}
   .modal__card{margin-top:20px}
   .modal__visual{height:220px}
 }
 
 @media (min-width:1080px){
-  :root{--row:clamp(104px,10.5vw,126px)}
-  .calendar{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .door--hero{grid-column:span 3}
+  .calendar{--cols:6;grid-template-columns:repeat(6,minmax(0,1fr))}
+  .door--hero{grid-column:span 3;grid-row:span 3}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -722,9 +756,12 @@ const ADVENT_DATA = [
   { day: 24, doorImage: 'assets/img/dia24.png',  title: '', htmlContent: '' }
 ];
 
-/* Composición del grid: los días con ilustración de parejita son los grandes */
-const WIDE_DAYS = new Set([2, 6, 10, 16, 20]);
-const TALL_DAYS = new Set([4, 8, 12, 18, 22]);
+/* Composición del grid según la proporción real de cada contenido:
+   PNG (1:1) → casillas cuadradas 1x1 o 2x2.
+   SVG → casillas rectangulares 2x1 o 1x2 con adornos sutiles. */
+const BIG_PNG_DAYS = new Set([2, 12, 16]);
+const WIDE_SVG_DAYS = new Set([1, 7, 11, 14, 19, 23]);
+const TALL_SVG_DAYS = new Set([3, 5, 9, 13, 15, 17, 21]);
 
 /* Orden fijo y mezclado sobre el tablero. La fecha de cada número no cambia. */
 const DISPLAY_ORDER = [
@@ -882,8 +919,9 @@ let toastTimer = null;
 
 function sizeClass(day){
   if(day === 24) return 'hero';
-  if(WIDE_DAYS.has(day)) return 'wide';
-  if(TALL_DAYS.has(day)) return 'tall';
+  if(BIG_PNG_DAYS.has(day)) return 'big';
+  if(WIDE_SVG_DAYS.has(day)) return 'wide';
+  if(TALL_SVG_DAYS.has(day)) return 'tall';
   return 'small';
 }
 
